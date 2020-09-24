@@ -89,8 +89,55 @@ def save(lst):
 
 
 def search():
-    pass
+    student_query=[]
+    while True:
+        Id = ''
+        name = ''
+        if os.path.exists(filename):
+            mode = input('search by Id(1) or name(2)? ')
+            if mode == '1':
+                Id = input('Please input student Id:')
+            elif mode == '2':
+                name = input('Please input student name:')
+            else:
+                print('Your input is not right, please input again')
+                search()
+            with open(filename, 'r', encoding='utf-8') as rfile:
+                student = rfile.readlines()
+                for item in student:
+                    d = dict(eval(item))
+                    if Id != '':
+                        if d['Id'] == Id:
+                            student_query.append(d)
+                    elif name != '':
+                        if d['name'] == name:
+                            student_query.append(d)
 
+            show_student(student_query)
+            student_query.clear()
+            answer = input(" Do you want search another student? y/n\n")
+            if answer == 'y' or answer == 'Y':
+                continue
+            else:
+                break
+        else:
+            print(" There is no student information.")
+            return
+
+
+def show_student(lst):
+    if len(lst) == 0:
+        print('There is no this student')
+        return
+    format_title = '{:^6}\t{:^12}\t{:^8}\t{:^10}\t{:^10}'
+    print(format_title.format('Id', "name", 'English','Python','Java'))
+    format_data = '{:^6}\t{:^12}\t{:^8}\t{:^10}\t{:^10}'
+    for item in lst:
+        print(format_data.format(item.get('Id'),
+                                  item.get('name'),
+                                  item.get('English'),
+                                  item.get('Python'),
+                                  item.get('Java'),))
 
 def delete():
     while True:
@@ -165,8 +212,15 @@ def sort():
 
 
 def total():
-    pass
-
+    if os.path.exists(filename):
+        with open(filename,'r',encoding='utf-8') as rfile:
+            students = rfile.readlines()
+            if students:
+                print(f" There are {len(students)} students in database")
+            else:
+                print("There is no student in database")
+    else:
+        print("There is no student in database")
 
 def show():
     pass
