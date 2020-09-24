@@ -4,6 +4,7 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import os
 
+import string
 filename = "student.txt"
 
 
@@ -137,7 +138,7 @@ def show_student(lst):
                                   item.get('name'),
                                   item.get('English'),
                                   item.get('Python'),
-                                  item.get('Java'),))
+                                  item.get('Java')))
 
 def delete():
     while True:
@@ -208,8 +209,41 @@ def modify():
 
 
 def sort():
-    pass
+    student_list = []
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding='utf-8') as rfile:
+            students = rfile.readlines()
 
+        for item in students:
+            student_list.append(dict(eval(item)))
+        if student_list:
+            print('Please choose sorting method:\n')
+            print('\t\t\t1. by Id')
+            print('\t\t\t2. by name')
+            print('\t\t\t3. by English Grade')
+            sort_way = input()
+            asc_or_desc = input('ascend(1) or descend(2)?\n')
+            if asc_or_desc=='1':
+                asc_or_desc == False
+            elif asc_or_desc=='2':
+                asc_or_desc == True
+            else:
+                print('Sorry, your input is wrong, please input again')
+                sort()
+            if sort_way == '1':
+                student_list.sort(key=lambda x: int(x['Id']), reverse=asc_or_desc)
+            elif sort_way == '2':
+                student_list.sort(key=lambda x: int(x['name']), reverse=asc_or_desc)
+            elif sort_way == '3':
+                student_list.sort(key=lambda x: int(x['English']), reverse=asc_or_desc)
+            else:
+                print('Sorry, your input is wrong, please input again')
+                sort()
+
+    else:
+        print("There is no student in database")
+
+    show_student(student_list)
 
 def total():
     if os.path.exists(filename):
@@ -223,7 +257,19 @@ def total():
         print("There is no student in database")
 
 def show():
-    pass
+    student_list = []
+    if os.path.exists(filename):
+        with open(filename,'r',encoding='utf-8') as rfile:
+            students = rfile.readlines()
+            for item in students:
+                student_list.append(eval(item))
+            if student_list:
+                # print(student_list)
+                show_student(student_list)
+            else:
+                print("There is no student in database")
+    else:
+        print("There is no student in database")
 
 
 # Press the green button in the gutter to run the script.
@@ -231,4 +277,3 @@ def show():
 if __name__ == '__main__':
     main()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
