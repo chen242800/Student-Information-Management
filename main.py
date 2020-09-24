@@ -2,8 +2,11 @@
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import os
 
-fileanme = "student.txt"
+filename = "student.txt"
+
+
 def menu():
     print("--------Student Information Management System--------")
     print("-----------------Function Menu-----------------------")
@@ -63,7 +66,7 @@ def insert():
             print("Please input decimal number")
             continue
 
-        student = {'Id': id, 'name': name, 'English': english, 'Python': python, 'java': java}
+        student = {'Id': id, 'name': name, 'English': english, 'Python': python, 'Java': java}
         student_list.append(student)
 
         answer = input(" Do you want add another student? y/n\n")
@@ -71,28 +74,90 @@ def insert():
             continue
         else:
             break
+    save(student_list)
+    print("Input student information successfully")
 
-        save(student_list)
 
 def save(lst):
     try:
-        stu_txt = open(fileanme, 'a', encoding='utf-8')
+        stu_txt = open(filename, 'a', encoding='utf-8')
     except:
-        stu_txt = open(fileanme, 'w', encoding="utf-8")
+        stu_txt = open(filename, 'w', encoding="utf-8")
     for item in lst:
-        stu_txt.write(str(item)+'\n')
+        stu_txt.write(str(item) + '\n')
     stu_txt.close()
+
 
 def search():
     pass
 
 
 def delete():
-    pass
+    while True:
+        student_id = input("Please input id: ")
+        if student_id != '':
+            if os.path.exists(filename):  # if file exist
+                with open(filename, 'r', encoding='utf-8') as file:
+                    student_old = file.readlines()
+            else:  # if not
+                student_old = []
+            flag = False  # False is delete unsuccessfully
+            if student_old:
+                with open(filename, 'w', encoding='utf-8') as wfile:
+                    d = {}
+                    for item in student_old:
+                        d = dict(eval(item))  # translate String into dict
+                        if d['Id'] != student_id:
+                            wfile.write(str(d) + '\n')
+                        else:
+                            flag = True
+
+                    if flag:
+                        print('Delete successfully')
+                    else:
+                        print(f"Do not find the student who's id is {student_id}")
+            else:
+                print("There is no student in database")
+                break
+            show()  # show all student information
+            answer = input("Do you need to delete a student? y/n\n")
+            if answer == 'y' or answer == 'Y':
+                continue
+            else:
+                break
 
 
 def modify():
-    pass
+    show()
+    if os.path.exists(filename):
+        with open(filename,'r',encoding='utf-8') as rfile:
+            student_old = rfile.readlines()
+    else:
+        return
+    student_id = input("Please input student Id:")
+    with open(filename,'w',encoding='utf-8') as wfile:
+        for item in student_old:
+            d = dict(eval(item))
+            if d['Id'] == student_id:
+                print(" Find the student, now start modifying")
+                while True:
+                    try:
+                        d['name'] = input('Please input name:')
+                        d['English'] = input("Please input English grade: ")
+                        d['Python'] = input("Please input Python grade: ")
+                        d['Java'] = input("Please input Java grade: ")
+                    except:
+                        print('wrong input, please input again')
+                    else:
+                        break
+
+                wfile.write(str(d)+'\n')
+                print('modefy successfully')
+            else:
+                wfile.write(str(d)+'\n')
+        answer = input("Do you need to modify another student information? y/n\n")
+        if answer == 'y' or answer == 'Y':
+            modify()
 
 
 def sort():
